@@ -71,7 +71,7 @@ pip install -r requirements.txt
 
 Validar de que el archivo pumps_cleaned.csv esté en la carpeta data/. Este archivo contiene información sobre las bombas, excluyendo su estado (status_group).
 
-# Cómo ejecutar el proyecto
+## *Cómo ejecutar el proyecto*
 
 ### 1. Iniciar el backend (FastAPI)
 
