@@ -59,7 +59,7 @@ git clone <URL_DEL_REPOSITORIO>
 cd <NOMBRE_DEL_REPOSITORIO>
 ```
 
-# 2. Instalar las dependencias
+### 2. Instalar las dependencias
 
 Todas las dependencias están listadas en el archivo requirements.txt. Instalar con el siguiente comando:
 
@@ -67,13 +67,13 @@ Todas las dependencias están listadas en el archivo requirements.txt. Instalar 
 pip install -r requirements.txt
 ```
 
-# 3. Preparar los datos
+### 3. Preparar los datos
 
 Validar de que el archivo pumps_cleaned.csv esté en la carpeta data/. Este archivo contiene información sobre las bombas, excluyendo su estado (status_group).
 
 # Cómo ejecutar el proyecto
 
-# 1. Iniciar el backend (FastAPI)
+### 1. Iniciar el backend (FastAPI)
 
 Primero, se debe iniciar el servidor FastAPI para manejar las solicitudes REST:
 
@@ -87,7 +87,7 @@ El servidor estará disponible en:
 http://127.0.0.1:8000/docs
 ```
 
-# 2. Iniciar la aplicación Streamlit
+### 2. Iniciar la aplicación Streamlit
 
 En una terminal separada, inicia la interfaz de usuario:
 
