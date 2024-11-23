@@ -1,0 +1,7 @@
+# Lista de dependencias
+fastapi
+uvicorn
+streamlit
+pandas
+folium
+streamlit-folium
