@@ -3,10 +3,10 @@ import pandas as pd
 import requests
 import folium
 from streamlit_folium import st_folium
-from model import predict_pump_status  # Importar la lógica del modelo
+from model import predict_pump_status
 
 # Configuración inicial
-DATA_PATH = "data/pumps_cleaned.csv"  # Ruta al archivo de datos
+DATA_PATH = "data/pumps_cleaned.csv"
 
 # Cargar datos
 @st.cache_data
@@ -24,14 +24,14 @@ st.markdown("Consulta la información de una o varias bombas de agua por sus IDs
 input_type = st.radio("Selecciona el tipo de entrada", ("Un solo ID", "Lista de IDs"))
 
 if input_type == "Un solo ID":
-    col1, col2 = st.columns([3, 1])  # Crear dos columnas para botones
+    col1, col2 = st.columns([3, 1])
     with col1:
         pump_id = st.number_input("Ingresa el ID de la bomba", min_value=1, step=1, key="pump_id")
 
     # Botón "Consultar" y "Limpiar búsqueda"
     with col2:
         if st.button("Limpiar búsqueda"):
-            st.session_state.pop("pump_results", None)  # Limpiar resultados
+            st.session_state.pop("pump_results", None)
             st.experimental_rerun()
 
     if st.button("Consultar"):
@@ -44,13 +44,13 @@ if input_type == "Un solo ID":
                 st.error(f"Error al procesar el modelo: {e}")
 
 elif input_type == "Lista de IDs":
-    col1, col2 = st.columns([3, 1])  # Crear dos columnas para botones
+    col1, col2 = st.columns([3, 1])
     with col1:
         pump_ids = st.text_area("Ingresa una lista de IDs separados por comas (ejemplo: 1,2,3)")
 
     with col2:
         if st.button("Limpiar búsqueda"):
-            st.session_state.pop("pump_results", None)  # Limpiar resultados
+            st.session_state.pop("pump_results", None)
             st.experimental_rerun()
 
     if st.button("Consultar"):
@@ -99,7 +99,7 @@ if "pump_results" in st.session_state:
                 for column, value in pump_info.iloc[0].items()
                 if column not in ["status_group", "id", "longitude", "latitude"]
             ])
-            tooltip_info = f"<b>ID:</b> {result['pump_id']}<br>{tooltip_info}"  # Agregar ID al tooltip
+            tooltip_info = f"<b>ID:</b> {result['pump_id']}<br>{tooltip_info}"
 
             if pd.notna(latitude) and pd.notna(longitude):
                 folium.Marker(
