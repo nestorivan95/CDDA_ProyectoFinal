@@ -38,7 +38,7 @@ Este proyecto es una aplicación interactiva que permite consultar el estado de 
 
 ## *Estructura del proyecto*
 
-
+```bash
 ├── app.py              # Código principal de la app en Streamlit
 ├── api.py              # Backend con FastAPI
 ├── model.py            # Simulación del modelo de predicción
@@ -48,6 +48,7 @@ Este proyecto es una aplicación interactiva que permite consultar el estado de 
 │   └── pumps_cleaned.csv # Datos de las bombas
 ├── requirements.txt    # Lista de dependencias
 └── README.md           # Instrucciones del proyecto
+```
 ---
 
 ## *Guía de instalación*
