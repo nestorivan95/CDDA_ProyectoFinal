@@ -2,7 +2,7 @@
 
 ## Estado y Características de Bombas de Agua
 
-Este proyecto es una aplicación interactiva que permite consultar el estado de una o varias bombas de agua, mostrar información detallada de las mismas y visualizar su ubicación en un mapa. Está construida usando *FastAPI* para el backend y *Streamlit* para la interfaz de usuario.
+Este proyecto es una aplicación interactiva que permite consultar el estado de una o varias bombas de agua, mostrar información detallada de las mismas y visualizar su ubicación en un mapa. Está construida usando *FastAPI* para el backend, *Streamlit* para la interfaz de usuario, y *Dash* para visualizaciones interactivas adicionales.
 
 ---
 
@@ -11,6 +11,7 @@ Este proyecto es una aplicación interactiva que permite consultar el estado de 
 1. Consulta el estado de una o varias bombas de agua.
 2. Visualiza la información geográfica y administrativa de cada bomba.
 3. Muestra un mapa interactivo con los puntos de las bombas y su información en el tooltip.
+4. Dashboard interactivo con gráficas y filtros dinámicos, desarrollado con *Dash*.
 
 ---
 
@@ -19,9 +20,11 @@ Este proyecto es una aplicación interactiva que permite consultar el estado de 
 - *Python*: Lenguaje de programación principal.
 - *FastAPI*: Framework utilizado para construir el API REST.
 - *Streamlit*: Framework para construir la interfaz de usuario interactiva.
+- *Dash*: Framework para el desarrollo de un dashboard interactivo.
 - *Folium*: Librería para mostrar mapas interactivos.
 - *Pandas*: Para manipulación de datos del archivo CSV.
 - *Streamlit-Folium*: Para integrar mapas interactivos en Streamlit.
+- *Plotly*: Para visualización interactiva de los datos.
 
 ---
 
@@ -35,16 +38,16 @@ Este proyecto es una aplicación interactiva que permite consultar el estado de 
 
 ## *Estructura del proyecto*
 
-```plaintext
+
 ├── app.py              # Código principal de la app en Streamlit
 ├── api.py              # Backend con FastAPI
 ├── model.py            # Simulación del modelo de predicción
+├── modeldash.py        # Lógica para manejar los datos y filtros de Dash
+├── dash.py             # Framework para desarrollar el dashboard con Dash
 ├── data/
 │   └── pumps_cleaned.csv # Datos de las bombas
 ├── requirements.txt    # Lista de dependencias
 └── README.md           # Instrucciones del proyecto
-```
-
 ---
 
 ## *Guía de instalación*
@@ -101,4 +104,26 @@ Esto abrirá la aplicación en tu navegador, normalmente en:
 http://localhost:8501
 ```
 
+### 1. Iniciar Dashboard
 
+Para iniciar el dashboard interactivo desarrollado con Dash, sigue estos pasos:
+
+En una terminal separada, navega al directorio del proyecto y ejecuta el siguiente comando para iniciar el servidor de Dash:
+
+
+```bash
+python dash.py
+```
+
+Esto lanzará el servidor Dash en el puerto 8050. La aplicación estará disponible en:
+
+```bash
+http://127.0.0.1:8050
+
+```
+
+## Estructura Dash
+
+- modeldash.py: Este archivo contiene la lógica encargada de manejar los datos y la lógica de los filtros para el dashboard. Es donde se definen las funciones que controlan la manipulación de datos y los cálculos necesarios para actualizar las visualizaciones.
+
+- dash.py: Aquí se encuentra el desarrollo del framework Dash. En este archivo, se configura la aplicación Dash, se definen los elementos del layout (gráficos, filtros, etc.) y se enlazan los callbacks para actualizar los componentes según las selecciones del usuario.
