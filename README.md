@@ -105,7 +105,7 @@ Esto abrirá la aplicación en tu navegador, normalmente en:
 http://localhost:8501
 ```
 
-### 1. Iniciar Dashboard
+### 3. Iniciar Dashboard
 
 Para iniciar el dashboard interactivo desarrollado con Dash, sigue estos pasos:
 
