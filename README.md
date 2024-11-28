@@ -85,11 +85,8 @@ Primero, se debe iniciar el servidor FastAPI para manejar las solicitudes REST:
 uvicorn api:app --reload --host 127.0.0.1 --port 8000
 ```
 
-El servidor estará disponible en:
+El servidor estará disponible en: **http://127.0.0.1:8000/docs**
 
-```bash
-http://127.0.0.1:8000/docs
-```
 
 ### 2. Iniciar la aplicación Streamlit
 
@@ -99,11 +96,7 @@ En una terminal separada, inicia la interfaz de usuario:
 streamlit run app.py
 ```
 
-Esto abrirá la aplicación en tu navegador, normalmente en:
-
-```bash
-http://localhost:8501
-```
+Esto abrirá la aplicación en tu navegador, normalmente en: http://localhost:8501
 
 ### 3. Iniciar Dashboard
 
