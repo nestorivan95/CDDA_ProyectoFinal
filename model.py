@@ -2,8 +2,8 @@ import joblib
 import pandas as pd
 
 # Cargar el modelo entrenado
-model = joblib.load("best_xgb_model.joblib")
-pd.set_option('display.max_columns', None)  # Muestra todas las columnas
+model = joblib.load("model/best_xgb_model.joblib")
+pd.set_option('display.max_columns', None)
 pd.set_option('display.width', None)   
 
 # Estados posibles
@@ -40,10 +40,6 @@ def preprocess_inputs(input_df):
 
         # Asegurar el orden de las columnas
         input_df = input_df[model_features]
-
-        # Imprimir el input_df procesado para depuración
-        print("Input DataFrame después de preprocesamiento:")
-        print(input_df.iloc[0].to_string())  # Imprime el primer registro procesado
 
         return input_df
 
