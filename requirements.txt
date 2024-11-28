@@ -5,3 +5,7 @@ streamlit
 pandas
 folium
 streamlit-folium
+dash
+dash_bootstrap_components
+xgboost
+joblib

@@ -1,114 +1,130 @@
 import streamlit as st
 import pandas as pd
-import requests
-import folium
-from streamlit_folium import st_folium
 from model import predict_pump_status
 
-# Configuración inicial
-DATA_PATH = "data/pumps_cleaned.csv"
+# Configuración de Streamlit
+st.title("Predicción del estado de las bombas de agua")
 
-# Cargar datos
-@st.cache_data
-def load_data():
-    data = pd.read_csv(DATA_PATH)
-    return data
+# Opciones iniciales
+option = st.radio(
+    "¿Cómo desea ingresar los datos?",
+    ("Un solo registro", "Múltiples registros (archivo CSV)")
+)
 
-pumps_data = load_data()
+# Columnas necesarias
+columns = [
+    "id",
+    "longitude",
+    "latitude",
+    "region",
+    "extraction_type",
+    "management",
+    "payment_type",
+    "quality_group",
+    "quantity_group",
+    "source",
+    "waterpoint_type",
+    "population_imputed",
+    "altitud",
+    "construction_year_imputed",
+    "imputed_scheme__management",
+    "imputed_permit"
+]
 
-# Título de la aplicación
-st.title("Estado y Características de Bombas de Agua")
-st.markdown("Consulta la información de una o varias bombas de agua por sus IDs y visualiza sus características geográficas.")
-
-# Entrada de datos
-input_type = st.radio("Selecciona el tipo de entrada", ("Un solo ID", "Lista de IDs"))
-
-if input_type == "Un solo ID":
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        pump_id = st.number_input("Ingresa el ID de la bomba", min_value=1, step=1, key="pump_id")
-
-    # Botón "Consultar" y "Limpiar búsqueda"
-    with col2:
-        if st.button("Limpiar búsqueda"):
-            st.session_state.pop("pump_results", None)
-            st.experimental_rerun()
-
-    if st.button("Consultar"):
-        with st.spinner("Procesando modelo..."):
-            try:
-                # Simular predicción con el modelo
-                result = predict_pump_status([pump_id])
-                st.session_state["pump_results"] = result
-            except Exception as e:
-                st.error(f"Error al procesar el modelo: {e}")
-
-elif input_type == "Lista de IDs":
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        pump_ids = st.text_area("Ingresa una lista de IDs separados por comas (ejemplo: 1,2,3)")
-
-    with col2:
-        if st.button("Limpiar búsqueda"):
-            st.session_state.pop("pump_results", None)
-            st.experimental_rerun()
-
-    if st.button("Consultar"):
-        with st.spinner("Procesando modelo..."):
-            try:
-                # Simular predicción con el modelo
-                pump_ids_list = [int(x.strip()) for x in pump_ids.split(",") if x.strip().isdigit()]
-                result = predict_pump_status(pump_ids_list)
-                st.session_state["pump_results"] = result
-            except Exception as e:
-                st.error(f"Error al procesar el modelo: {e}")
-
-# Mostrar resultados si existen en session_state
-if "pump_results" in st.session_state:
-    results = st.session_state["pump_results"]
-
-    # Mostrar el estado de las bombas en lista
-    st.markdown("### Estados de las Bombas")
-    for result in results:
-        state = result["status_group"]
-        state_color = {
-            "functional": "green",
-            "functional needs repair": "yellow",
-            "non functional": "red"
-        }
-        st.markdown(
-            f"<div style='padding: 5px; background-color: {state_color[state]}; color: black; border-radius: 5px; font-weight: bold;'>"
-            f"ID: {result['pump_id']} - Estado: {state}"
-            f"</div>",
-            unsafe_allow_html=True
-        )
-
-    # Mostrar el mapa con información en el tooltip
-    st.markdown("### Ubicación Geográfica")
-    map_object = folium.Map(location=[-6.369028, 34.888822], zoom_start=6)  # Coordenadas generales (Tanzania)
-
-    for result in results:
-        pump_info = pumps_data[pumps_data["id"] == result["pump_id"]]
-        if not pump_info.empty:
-            latitude = pump_info.iloc[0]["latitude"]
-            longitude = pump_info.iloc[0]["longitude"]
-
-            # Construir tooltip con información detallada
-            tooltip_info = "<br>".join([
-                f"<b>{column.capitalize().replace('_', ' ')}:</b> {value}"
-                for column, value in pump_info.iloc[0].items()
-                if column not in ["status_group", "id", "longitude", "latitude"]
-            ])
-            tooltip_info = f"<b>ID:</b> {result['pump_id']}<br>{tooltip_info}"
-
-            if pd.notna(latitude) and pd.notna(longitude):
-                folium.Marker(
-                    [latitude, longitude],
-                    tooltip=tooltip_info,
-                    popup=f"ID: {result['pump_id']} - Estado: {result['status_group']}"
-                ).add_to(map_object)
-
-    # Mostrar el mapa en Streamlit
-    st_folium(map_object, width=800, height=600)
-
+if option == "Un solo registro":
+    st.subheader("Ingresar un solo registro")
     
+    # Crear inputs para cada columna
+    input_data = {}
+    for column in columns:
+        if column == "id":
+            input_data[column] = st.text_input(f"Ingrese {column}:")
+        elif column in ["longitude", "latitude", "population_imputed", "altitud", "construction_year_imputed"]:
+            input_data[column] = st.number_input(f"Ingrese {column}:", value=0.0)
+        elif column == "imputed_permit":
+            value = st.selectbox(f"Ingrese {column}:", ["True", "False"])
+            input_data[column] = value
+        else:
+            input_data[column] = st.text_input(f"Ingrese {column}:")
+
+    if st.button("Predecir"):
+        input_data = [input_data]  # Convertir a lista para el modelo
+        try:
+            predictions = predict_pump_status(input_data)
+            # Mostrar las predicciones de forma amigable
+            for pred in predictions:
+                pump_id = pred["pump_id"]
+                st.write(f"### Predicciones para la bomba **{pump_id}**:")
+                
+                max_prob = max(pred['probabilities'], key=pred['probabilities'].get)
+                max_prob_value = pred['probabilities'][max_prob]
+
+                # Mostrar las probabilidades
+                for status, prob in pred['probabilities'].items():
+                    st.write(f"- **{status}:** {prob*100:.2f}%")
+
+                # Establecer color según el estado
+                if max_prob == "functional":
+                    color = "green"
+                    status_message = "Alta probabilidad de que esté **functional**."
+                elif max_prob == "functional needs repair":
+                    color = "yellow"
+                    status_message = "Probabilidad media de que esté **functional needs repair**."
+                else:
+                    color = "red"
+                    status_message = "Alta probabilidad de que esté **non functional**."
+
+                # Mostrar el mensaje con el color adecuado
+                st.markdown(f"<span style='color: {color};'>{status_message}</span>", unsafe_allow_html=True)
+                st.write("---")
+        except Exception as e:
+            st.error(f"Error en la predicción: {e}")
+            st.error("Detalles técnicos:")
+            st.error(str(e))
+
+elif option == "Múltiples registros (archivo CSV)":
+    st.subheader("Subir archivo CSV")
+    uploaded_file = st.file_uploader("Cargue su archivo CSV", type=["csv"])
+
+    if uploaded_file is not None:
+        data = pd.read_csv(uploaded_file)
+        
+        # Verificar si las columnas necesarias están presentes
+        missing_columns = [col for col in columns if col not in data.columns]
+        if missing_columns:
+            st.error(f"El archivo no contiene las siguientes columnas requeridas: {missing_columns}")
+        else:
+            if st.button("Predecir"):
+                try:
+                    predictions = predict_pump_status(data.to_dict(orient="records"))
+                    # Mostrar las predicciones de forma amigable
+                    for pred in predictions:
+                        pump_id = pred["pump_id"]
+                        st.write(f"### Predicciones para la bomba **{pump_id}**:")
+                        
+                        max_prob = max(pred['probabilities'], key=pred['probabilities'].get)
+                        max_prob_value = pred['probabilities'][max_prob]
+
+                        # Mostrar las probabilidades
+                        for status, prob in pred['probabilities'].items():
+                            st.write(f"- **{status}:** {prob*100:.2f}%")
+                        
+                        # Establecer color según el estado
+                        if max_prob == "functional":
+                            color = "green"
+                            status_message = "Alta probabilidad de que esté **functional**."
+                        elif max_prob == "functional needs repair":
+                            color = "yellow"
+                            status_message = "Probabilidad media de que esté **functional needs repair**."
+                        else:
+                            color = "red"
+                            status_message = "Alta probabilidad de que esté **non functional**."
+
+                        # Mostrar el mensaje con el color adecuado
+                        st.markdown(f"<span style='color: {color};'>{status_message}</span>", unsafe_allow_html=True)
+
+                        st.write("---")
+                except Exception as e:
+                    st.error(f"Error en la predicción: {e}")
+                    st.error("Detalles técnicos:")
+                    st.error(str(e))
