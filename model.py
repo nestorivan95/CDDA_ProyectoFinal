@@ -3,9 +3,13 @@ import pandas as pd
 
 # Cargar el modelo entrenado
 model = joblib.load("best_xgb_model.joblib")
+pd.set_option('display.max_columns', None)  # Muestra todas las columnas
+pd.set_option('display.width', None)   
 
 # Estados posibles
-STATUS_GROUPS = ["functional", "functional needs repair", "non functional"]
+STATUS_GROUPS = ["functional", "functional needs repair", "non functional"]  
+
+import pandas as pd
 
 def preprocess_inputs(input_df):
     """
@@ -23,14 +27,11 @@ def preprocess_inputs(input_df):
 
         # Convertir `imputed_permit` a numérico (True -> 1, False -> 0)
         if "imputed_permit" in input_df.columns:
-            input_df["imputed_permit"] = input_df["imputed_permit"].map({"True": 1, "False": 0, True: 1, False: 0})
+            input_df["imputed_permit"] = input_df["imputed_permit"].map({"True": 1, "False": 0, True: 1, False: 0}).astype(int)
 
-        # Convertir todas las columnas categóricas a numéricas
-        categorical_columns = [
-            col for col in input_df.columns if input_df[col].dtype.name == "category"
-        ]
-        for col in categorical_columns:
-            input_df[col] = input_df[col].cat.codes
+        # Convertir las variables categóricas a variables dummy (como en el entrenamiento)
+        categorical_columns = input_df.select_dtypes(include=['object']).columns
+        input_df = pd.get_dummies(input_df, columns=categorical_columns, drop_first=True)
 
         # Asegurar que las columnas del modelo estén presentes
         for col in model_features:
@@ -39,10 +40,16 @@ def preprocess_inputs(input_df):
 
         # Asegurar el orden de las columnas
         input_df = input_df[model_features]
+
+        # Imprimir el input_df procesado para depuración
+        print("Input DataFrame después de preprocesamiento:")
+        print(input_df.iloc[0].to_string())  # Imprime el primer registro procesado
+
         return input_df
 
     except Exception as e:
         raise ValueError(f"Error en el preprocesamiento de los datos: {e}")
+    
 
 def predict_pump_status(inputs):
     """
@@ -80,6 +87,8 @@ def predict_pump_status(inputs):
             }
             for idx in range(len(pump_ids))
         ]
+
         return predictions
     except Exception as e:
         raise ValueError(f"Error en la predicción: {e}")
+
