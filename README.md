@@ -1,5 +1,11 @@
 # Ciencia de Datos Aplicada: Proyecto Final
 
+## Integrantes: 
+- Santiago Najar Gomez
+- Juan Diego Velásquez
+- Juan Diego Velásquez
+- Nestor Ivan Ramirez
+
 ## Estado y Características de Bombas de Agua
 
 Este proyecto es una aplicación interactiva que permite consultar el estado de una o varias bombas de agua, mostrar información detallada de las mismas y visualizar su ubicación en un mapa. Está construida usando *FastAPI* para el backend, *Streamlit* para la interfaz de usuario, y *Dash* para visualizaciones interactivas adicionales.
@@ -121,3 +127,14 @@ http://127.0.0.1:8050
 - modeldash.py: Este archivo contiene la lógica encargada de manejar los datos y la lógica de los filtros para el dashboard. Es donde se definen las funciones que controlan la manipulación de datos y los cálculos necesarios para actualizar las visualizaciones.
 
 - dash.py: Aquí se encuentra el desarrollo del framework Dash. En este archivo, se configura la aplicación Dash, se definen los elementos del layout (gráficos, filtros, etc.) y se enlazan los callbacks para actualizar los componentes según las selecciones del usuario.
+
+## Conclusiones
+
+- Se obtuvo un producto de datos cuyo modelo, con una precisión del 84%, representa una herramienta importante para la optimización de recursos por parte de las entidades gubernamentales de Tanzania.
+- El proceso de limpieza e imputación de los datos faltantes fue el proceso más arduo, ya que el Gobierno de Tanzania tiene poca información disponible y, además, se presentaban muchos valores erróneos.
+- Se espera que con el uso de la herramienta el número de pozos reparados al mes aumente ya que se dispondrá de mejor forma los recursos disponibles para mantenimiento.
+- Para obtener un modelo con mejores resultados sería ideal contar con datos actualizados, valores categóricos bien definidos y valores balanceados geográficamente. Igualmente pueden existir variables adicionales que aporten al modelo como comportamientos sociales o climáticos.
+- Durante el proceso, dedicamos una buena cantidad de tiempo al Análisis Exploratorio de Datos (EDA) y elaboramos informes de calidad de datos que nos permitieron obtener perspectivas esenciales sobre la información.
+- Es importante no descartar de inmediato las características con alta cardinalidad; en su lugar, agrupamos las clases raras en una nueva clase única, lo que facilitó un análisis más consistente y manejable.
+
+
