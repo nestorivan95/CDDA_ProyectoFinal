@@ -3,7 +3,7 @@
 ## Integrantes: 
 - Santiago Najar Gomez
 - Juan Diego Velásquez
-- Juan Diego Velásquez
+- Carlos Alberto Niño Ramirez
 - Nestor Ivan Ramirez
 
 ## Estado y Características de Bombas de Agua
